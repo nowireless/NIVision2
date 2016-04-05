@@ -1,0 +1,73 @@
+buildscript {
+    repositories {
+      mavenCentral()
+   }
+
+    dependencies {
+        classpath "com.ullink.gradle:gradle-msbuild-plugin:2.14"
+   }
+}
+
+apply plugin: 'java'
+apply plugin: 'msbuild'
+apply plugin: 'maven-publish'
+
+msbuild {
+  // mandatory (one of those)
+  solutionFile = 'NIVisionJava.sln'
+  projectFile = file('NIVision.vcxproj')
+
+  // MsBuild project name (/p:Project=...)
+  projectName = project.name
+
+  // Verbosity (/v:detailed, by default uses gradle logging level)
+  //verbosity = 'detailed'
+
+  // targets to execute (/t:Clean;Rebuild, no default)
+  targets = ['Clean', 'Rebuild']
+
+  platform="x86"
+  configuration = "Release"
+
+  // Below values can override settings from the project file
+
+  // overrides project OutputPath
+  destinationDir = 'build/msbuild/bin'
+
+  // overrides project IntermediaryOutputPath
+  intermediateDir = 'build/msbuild/obj'
+
+  // Generates XML documentation file (from javadoc through custom DocLet)
+  generateDoc = false
+
+  // Other msbuild options can be set:
+  // loggerAssembly, generateDoc, debugType, optimize, debugSymbols, configuration, platform, defineConstants ...
+
+  // you can also provide properties by name (/p:SomeProperty=Value)
+  parameters.SomeProperty = 'Value'
+
+  // Or, if you use built-in msbuild parameters that aren't directly available here,
+  // you can take advantage of the ExtensionAware interface
+  ext["flp1"] = "LogFile=" + file("${project.name}.errors.log").path + ";ErrorsOnly;Verbosity=diag"
+}
+
+task copyNativeToResource(type: Copy) {
+  from 'Release/NIVisionJava.dll'
+  into 'src/main/resources/com/ni/vision/native/win32'
+}
+
+gradle.projectsEvaluated {
+  copyNativeToResource.dependsOn(msbuild)
+  compileJava.dependsOn(copyNativeToResource)
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      groupId 'com.ni.vision'
+      artifactId 'native-win32'
+      version '1.0-SNAPSHOT'
+      from components.java
+    }
+  }
+}
