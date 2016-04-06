@@ -1,0 +1,7 @@
+NIVision/build/
+IMAQdx/native/build/
+NIVision/native/build/
+NIVision/native/Release/
+IMAQdx/native/Release/
+.gradle/
+IMAQdx/build/

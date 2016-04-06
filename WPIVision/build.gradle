@@ -8,7 +8,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 dependencies {
-  compile project(':NIVision')
+  compile project('NIVision')
 }
 
 task sourceJar(type: Jar) {
