@@ -1,5 +1,10 @@
 package org.nowireless.imaqdx;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -82,6 +87,32 @@ public class IMAQdx {
 		public IMAQdxException(String str) {
 			super(str);
 		}
+	}
+	
+	public static void loadNatives() {
+		InputStream in = IMAQdx.class.getResourceAsStream("/org/nowireless/imaqdx/native/win32/IMAQdxJava.dll");
+		
+		try {
+			File jniLib = File.createTempFile("IMAQdxJava", ".dll");
+			OutputStream out = new FileOutputStream(jniLib);
+			jniLib.deleteOnExit();
+
+			byte[] buffer = new byte[1024];
+			int readBytes;
+			try {
+				while ((readBytes = in.read(buffer)) != -1) {
+					out.write(buffer, 0, readBytes);
+				}
+			} finally {
+				out.close();
+				in.close();
+			}
+
+			System.load(jniLib.getAbsolutePath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	private static native int _IMAQdxEnumerateCameras(long informationArray, ByteBuffer count, boolean connectedOnly);

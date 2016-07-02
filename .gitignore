@@ -1,0 +1,17 @@
+NIVision/build/
+NIVision/bin/
+IMAQdx/native/build/msbuild/obj/IMAQdxJava.tlog/IMAQdxJava.write.1u.tlog
+IMAQdx/native/build/
+IMAQdx/native/Release/
+NIVision/.classpath
+NIVision/.settings/
+*.classpath
+*.project
+NIVision/native/.settings/
+NIVision/native/Release/
+NIVision/native/build/msbuild/obj/NIVisionJava.tlog/link.read.1.tlog
+NIVision/native/build/
+IMAQdx/native/.settings/gradle.prefs
+IMAQdx/build/
+.settings/
+IMAQdx/bin/
